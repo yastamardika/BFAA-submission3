@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sub2-bfaa</string>
+    <string name="username">username</string>
+    <string name="name">nama</string>
+    <string name="location">lokasi</string>
+    <string name="change_language_settings">ganti bahasa</string>
+    <string name="company">perusahaan</string>
+    <string name="follower">pengikut</string>
+    <string name="following">mengikuti</string>
+</resources>

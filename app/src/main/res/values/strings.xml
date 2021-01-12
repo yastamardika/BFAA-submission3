@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">sub2-bfaa</string>
+    <string name="username">username</string>
+    <string name="name">name</string>
+    <string name="location">location</string>
+    <string name="change_language_settings">change language</string>
+    <string name="company">company</string>
+    <string name="follower">follower</string>
+    <string name="following">following</string>
+</resources>
