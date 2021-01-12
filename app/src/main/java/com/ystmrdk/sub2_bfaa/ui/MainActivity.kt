@@ -1,5 +1,8 @@
 package com.ystmrdk.sub2_bfaa.ui
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -15,10 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ystmrdk.sub2_bfaa.R
 import com.ystmrdk.sub2_bfaa.adapter.UserAdapter
 import com.ystmrdk.sub2_bfaa.model.User
+import com.ystmrdk.sub2_bfaa.receiver.AlarmReceiver
+import com.ystmrdk.sub2_bfaa.ui.fragment.SettingFragment
 import com.ystmrdk.sub2_bfaa.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
     private lateinit var adapterUserData: UserAdapter
     private lateinit var mainViewModel: MainViewModel
     private var usersData = ArrayList<User>()
@@ -36,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         search()
         initObserver()
         mainViewModel.fetchUser()
+        notificationSetup()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -47,6 +55,9 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.action_change_settings) {
             val intentLocale = Intent(Settings.ACTION_LOCALE_SETTINGS)
             startActivity(intentLocale)
+        } else if(item.itemId == R.id.settings){
+            val intentSettings = Intent(this, SettingActivity::class.java)
+            startActivity(intentSettings)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -124,5 +135,56 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun notificationSetup(){
+        val preference = getSharedPreferences("Setting", Context.MODE_PRIVATE)
+        val editor = preference.edit()
+        if (!preference.contains("notif")){
+            editor.putBoolean("notif",true)
+            onSwitchChange(true)
+        }
+        editor.apply()
+    }
+
+    override fun onSwitchChange(b: Boolean) {
+        val preference = getSharedPreferences("Setting", Context.MODE_PRIVATE)
+        val editor = preference.edit()
+        editor.putBoolean("notif",b)
+        editor.apply()
+        if (b){
+            dailyAlarmSetup()
+        }else{
+            stopDailyAlarm()
+        }
+    }
+
+    private fun stopDailyAlarm() {
+        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, AlarmReceiver.NOTIF_ID, intent, 0)
+        alarmManager.cancel(pendingIntent)
+    }
+
+    private fun dailyAlarmSetup() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 9)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+
+
+        if (Calendar.getInstance().after(calendar)) {
+            calendar.add(Calendar.DATE, 1)
+        }
+
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, AlarmReceiver.NOTIF_ID, intent, 0)
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+    }
 
 }

@@ -7,4 +7,13 @@
     <string name="company">company</string>
     <string name="follower">follower</string>
     <string name="following">following</string>
+    <string name="settings">settings</string>
+    <string name="notifikasi">Notifikasi</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
+    <!-- Preference Titles -->
+
+    <!-- Messages Preferences -->
+
+    <!-- Sync Preferences -->
 </resources>
