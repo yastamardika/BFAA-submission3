@@ -41,18 +41,8 @@ class UserAdapter(usersData: ArrayList<User>) :
                 tv_location.text = user.location
 
                 setOnClickListener {
-                    val userData = User(
-                        user.username,
-                        user.name,
-                        user.avatar,
-                        user.company,
-                        user.location,
-                        user.repository,
-                        user.follower,
-                        user.following
-                    )
                     val detailIntent = Intent(context, DetailActivity::class.java)
-                    detailIntent.putExtra(DetailActivity.EXTRA_DATA, userData)
+                    detailIntent.putExtra(DetailActivity.EXTRA_DATA, user)
                     context.startActivity(detailIntent)
                 }
             }
