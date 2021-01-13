@@ -43,6 +43,12 @@ class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
         search()
         initObserver()
         mainViewModel.fetchUser()
+
+        floatingActionButton.setOnClickListener {
+            val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
+        }
+
         notificationSetup()
     }
 
@@ -118,18 +124,6 @@ class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
     }
 
     private fun selectUser(userData: User) {
-        userData.let {
-            User(
-                it.username,
-                it.name,
-                it.avatar,
-                it.company,
-                it.location,
-                it.repository,
-                it.follower,
-                it.following,
-            )
-        }
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(DetailActivity.EXTRA_DATA, userData)
         startActivity(intent)

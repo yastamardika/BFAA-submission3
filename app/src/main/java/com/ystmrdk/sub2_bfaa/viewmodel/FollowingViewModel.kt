@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.ystmrdk.sub2_bfaa.model.User
-import com.ystmrdk.sub2_bfaa.util.Constant
+import com.ystmrdk.sub2_bfaa.utils.Constants
 import cz.msebera.android.httpclient.Header
 import org.json.JSONArray
 import org.json.JSONObject
@@ -20,7 +20,7 @@ class FollowingViewModel {
         isLoading.value = true
         val data = AsyncHttpClient()
         data.addHeader("User-Agent", "request")
-        data.addHeader("Authorization", Constant.TOKEN)
+        data.addHeader("Authorization", Constants.API_TOKEN)
         data.get("https://api.github.com/users/$q/following", object : AsyncHttpResponseHandler() {
             override fun onSuccess(
                 statusCode: Int,
@@ -64,7 +64,7 @@ class FollowingViewModel {
         isLoading.value = true
         val data = AsyncHttpClient()
         data.addHeader("User-Agent", "request")
-        data.addHeader("Authorization", Constant.TOKEN)
+        data.addHeader("Authorization", Constants.API_TOKEN)
 
         data.get("https://api.github.com/users/$query", object : AsyncHttpResponseHandler() {
             override fun onSuccess(
@@ -76,6 +76,7 @@ class FollowingViewModel {
                 val response = String(responseBody)
                 try {
                     val resObject = JSONObject(response)
+                    val id: Int = resObject.getInt("id")
                     val username: String = resObject.getString("login").toString()
                     val name: String = resObject.getString("name").toString()
                     val avatar: String = resObject.getString("avatar_url").toString()
@@ -86,6 +87,7 @@ class FollowingViewModel {
                     val following: String = resObject.getString("following").toString()
                     list.add(
                         User(
+                            id,
                             username,
                             if (name == "null") "-" else name,
                             avatar,

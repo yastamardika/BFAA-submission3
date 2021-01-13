@@ -5,15 +5,19 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
-import com.ystmrdk.sub2_bfaa.adapter.PagerAdapter
 import com.ystmrdk.sub2_bfaa.R
+import com.ystmrdk.sub2_bfaa.adapter.PagerAdapter
+import com.ystmrdk.sub2_bfaa.db.FavoriteDatabase
 import com.ystmrdk.sub2_bfaa.model.User
+import com.ystmrdk.sub2_bfaa.viewmodel.DetailViewModel
 import com.ystmrdk.sub2_bfaa.receiver.AlarmReceiver
 import com.ystmrdk.sub2_bfaa.receiver.AlarmReceiver.Companion.NOTIF_ID
 import kotlinx.android.synthetic.main.activity_detail.*
@@ -24,29 +28,61 @@ class DetailActivity : AppCompatActivity() {
         const val EXTRA_DATA = "data"
     }
 
+    private lateinit var detailViewModel: DetailViewModel
+
+    private var userData: User? = null
+    private var menuFavorite: MenuItem? = null
+    private var isFavorite: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+
+        setupActionBar()
+        setupViewModel()
         init()
+        initObserver()
         setupViewPager()
+    }
+
+    private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    private fun setupViewModel() {
+        detailViewModel = DetailViewModel()
+        detailViewModel.init(this)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
+        menuInflater.inflate(R.menu.detail_menu, menu)
+        menuFavorite = menu?.findItem(R.id.action_favorite)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_change_settings) {
-            val intentLocale = Intent(Settings.ACTION_LOCALE_SETTINGS)
-            startActivity(intentLocale)
-            return true
-        } else if (item.itemId == android.R.id.home) {
-            finish()
-            return true
+        when (item.itemId) {
+            R.id.action_change_settings -> {
+                val intentLocale = Intent(Settings.ACTION_LOCALE_SETTINGS)
+                startActivity(intentLocale)
+                return true
+            }
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            R.id.action_favorite -> {
+                toggleFavorite()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menuFavorite = menu?.findItem(R.id.action_favorite)
+        checkUser()
+        return super.onPrepareOptionsMenu(menu)
     }
 
     private fun setupViewPager() {
@@ -58,16 +94,50 @@ class DetailActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
     private fun init() {
-        val userData = intent.getParcelableExtra<User>(EXTRA_DATA)
+        userData = intent.getParcelableExtra(EXTRA_DATA)
         userData?.let {
+            checkUser()
             title = it.name
             tv_username.text = it.username
             tv_repository.text = "Repository : ${it.repository}"
             tv_company.text = "Company : ${it.company}"
             tv_location.text = "Location : ${it.location}"
+            detailViewModel.setUserData(it)
         }
         Glide.with(this).load(userData?.avatar).into(iv_avatar)
     }
 
+
+    private fun initObserver() {
+        detailViewModel.count.observe(this, Observer<Int> {
+            if (it > 0) {  // the user is already added to favorite
+                isFavorite = true
+                menuFavorite?.setIcon(R.drawable.ic_baseline_favorite_24)
+            } else {
+                isFavorite = false
+                menuFavorite?.setIcon(R.drawable.ic_baseline_favorite_border_24)
+            }
+        })
+    }
+
+    private fun checkUser() {
+        userData?.let {
+            detailViewModel.getCount(it.id)
+        }
+    }
+
+    private fun toggleFavorite(){
+        if(isFavorite){
+            detailViewModel.deleteFromFavorite()
+        } else {
+            detailViewModel.addToFavorite()
+        }
+        checkUser()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FavoriteDatabase.destroyDatabase()
+    }
 
 }
