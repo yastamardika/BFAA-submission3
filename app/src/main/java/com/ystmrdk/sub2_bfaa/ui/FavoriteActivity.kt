@@ -1,13 +1,13 @@
 package com.ystmrdk.sub2_bfaa.ui
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,32 +15,37 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ystmrdk.sub2_bfaa.R
 import com.ystmrdk.sub2_bfaa.adapter.UserAdapter
 import com.ystmrdk.sub2_bfaa.model.User
+import com.ystmrdk.sub2_bfaa.viewmodel.FavoriteViewModel
 import com.ystmrdk.sub2_bfaa.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class FavoriteActivity : AppCompatActivity() {
     private lateinit var adapterUserData: UserAdapter
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var viewModel: FavoriteViewModel
     private var usersData = ArrayList<User>()
 
     companion object {
-        private val TAG = MainActivity::class.java.simpleName
+        private val TAG = FavoriteActivity::class.java.simpleName
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        mainViewModel = MainViewModel()
+        setContentView(R.layout.activity_favorite)
 
+        setupActionBar()
+        setupViewModel()
         setupRecyclerView()
-        search()
         initObserver()
-        mainViewModel.fetchUser()
+    }
 
-        floatingActionButton.setOnClickListener {
-            val intent = Intent(this, FavoriteActivity::class.java)
-            startActivity(intent)
-        }
+    private fun setupActionBar(){
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Favorite"
+    }
+
+    private fun setupViewModel(){
+        viewModel = FavoriteViewModel()
+        viewModel.init(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -52,41 +57,18 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.action_change_settings) {
             val intentLocale = Intent(Settings.ACTION_LOCALE_SETTINGS)
             startActivity(intentLocale)
+        } else if (item.itemId == android.R.id.home) {
+            finish()
+            return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun initObserver() {
-        mainViewModel.isLoading.observe(this, Observer<Boolean> {
-            if (it) progressBar.visibility = View.VISIBLE
-            else progressBar.visibility = View.INVISIBLE
-        })
-
-        mainViewModel.usersData.observe(this, Observer<ArrayList<User>> {
-            Log.d("TAG DEBUG", "init: $it")
+        viewModel.favorites.observe(this, Observer<List<User>> {
             usersData.clear()
             usersData.addAll(it)
             rvShow()
-        })
-
-        mainViewModel.err.observe(this, Observer<String> {
-            Log.d("TAG DEBUG", "err: $it")
-        })
-    }
-
-    private fun search() {
-        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                if (!p0.isEmpty()) {
-                    usersData.clear()
-                    mainViewModel.fetchSearch(p0)
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(p0: String?): Boolean {
-                return false
-            }
         })
     }
 
@@ -107,7 +89,6 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClicked(userData: User) {
                 selectUser(userData)
             }
-
         })
     }
 
@@ -116,6 +97,5 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra(DetailActivity.EXTRA_DATA, userData)
         startActivity(intent)
     }
-
 
 }
