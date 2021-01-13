@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.ystmrdk.sub2_bfaa.model.User
+import com.ystmrdk.sub2_bfaa.util.Constant
 import cz.msebera.android.httpclient.Header
 import org.json.JSONArray
 import org.json.JSONObject
@@ -19,7 +20,7 @@ class FollowingViewModel {
         isLoading.value = true
         val data = AsyncHttpClient()
         data.addHeader("User-Agent", "request")
-        data.addHeader("Authorization", "token dacdb8a9be02852a14deaf5f2e27558627481d6d")
+        data.addHeader("Authorization", Constant.TOKEN)
         data.get("https://api.github.com/users/$q/following", object : AsyncHttpResponseHandler() {
             override fun onSuccess(
                 statusCode: Int,
@@ -63,7 +64,7 @@ class FollowingViewModel {
         isLoading.value = true
         val data = AsyncHttpClient()
         data.addHeader("User-Agent", "request")
-        data.addHeader("Authorization", "token dacdb8a9be02852a14deaf5f2e27558627481d6d")
+        data.addHeader("Authorization", Constant.TOKEN)
 
         data.get("https://api.github.com/users/$query", object : AsyncHttpResponseHandler() {
             override fun onSuccess(
