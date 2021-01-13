@@ -8,4 +8,8 @@
     <string name="company">perusahaan</string>
     <string name="follower">pengikut</string>
     <string name="following">mengikuti</string>
+    <string name="settings">pengaturan</string>
+    <string name="notifikasi">Notifikasi</string>
+    <string name="off">mati</string>
+    <string name="on">hidup</string>
 </resources>

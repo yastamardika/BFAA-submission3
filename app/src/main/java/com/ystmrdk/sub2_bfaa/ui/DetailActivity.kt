@@ -1,6 +1,9 @@
 package com.ystmrdk.sub2_bfaa.ui
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -15,7 +18,10 @@ import com.ystmrdk.sub2_bfaa.adapter.PagerAdapter
 import com.ystmrdk.sub2_bfaa.db.FavoriteDatabase
 import com.ystmrdk.sub2_bfaa.model.User
 import com.ystmrdk.sub2_bfaa.viewmodel.DetailViewModel
+import com.ystmrdk.sub2_bfaa.receiver.AlarmReceiver
+import com.ystmrdk.sub2_bfaa.receiver.AlarmReceiver.Companion.NOTIF_ID
 import kotlinx.android.synthetic.main.activity_detail.*
+import java.util.*
 
 class DetailActivity : AppCompatActivity() {
     companion object {
@@ -133,4 +139,5 @@ class DetailActivity : AppCompatActivity() {
         super.onDestroy()
         FavoriteDatabase.destroyDatabase()
     }
+
 }
