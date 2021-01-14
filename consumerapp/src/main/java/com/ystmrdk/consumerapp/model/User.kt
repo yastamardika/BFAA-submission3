@@ -1,15 +1,11 @@
-package com.ystmrdk.sub2_bfaa.model
+package com.ystmrdk.consumerapp.model
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.ystmrdk.sub2_bfaa.utils.Constants
-import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = Constants.TABLE_NAME)
+//@Entity(tableName = Constants.TABLE_NAME)
 data class User(
-    @PrimaryKey
+//    @PrimaryKey
     var id: Int,
     var username: String? = "",
     var name: String? = "",
