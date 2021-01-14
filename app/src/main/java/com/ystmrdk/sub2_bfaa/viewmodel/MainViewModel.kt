@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
-import com.ystmrdk.sub2_bfaa.BuildConfig
 import com.ystmrdk.sub2_bfaa.model.User
 import com.ystmrdk.sub2_bfaa.utils.Constants
 import cz.msebera.android.httpclient.Header
@@ -24,7 +23,6 @@ class MainViewModel : ViewModel() {
         val data = AsyncHttpClient()
         data.addHeader("User-Agent", "request")
         data.addHeader("Authorization", Constants.API_TOKEN)
-
         data.get("https://api.github.com/users", object : AsyncHttpResponseHandler() {
             override fun onSuccess(
                 statusCode: Int,
@@ -135,7 +133,6 @@ class MainViewModel : ViewModel() {
         val data = AsyncHttpClient()
         data.addHeader("User-Agent", "request")
         data.addHeader("Authorization", Constants.API_TOKEN)
-
         data.get(
             "https://api.github.com/search/users?q=$query",
             object : AsyncHttpResponseHandler() {
