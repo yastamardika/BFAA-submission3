@@ -25,19 +25,21 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
+class MainActivity : AppCompatActivity(), SettingActivity.SettingCallback {
     private lateinit var adapterUserData: UserAdapter
     private lateinit var mainViewModel: MainViewModel
     private var usersData = ArrayList<User>()
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
+        lateinit var callback: SettingActivity.SettingCallback
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mainViewModel = MainViewModel()
+        callback = this
 
         setupRecyclerView()
         search()
@@ -61,7 +63,7 @@ class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
         if (item.itemId == R.id.action_change_settings) {
             val intentLocale = Intent(Settings.ACTION_LOCALE_SETTINGS)
             startActivity(intentLocale)
-        } else if(item.itemId == R.id.settings){
+        } else if (item.itemId == R.id.settings) {
             val intentSettings = Intent(this, SettingActivity::class.java)
             startActivity(intentSettings)
         }
@@ -129,24 +131,25 @@ class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
         startActivity(intent)
     }
 
-    private fun notificationSetup(){
+    private fun notificationSetup() {
         val preference = getSharedPreferences("Setting", Context.MODE_PRIVATE)
         val editor = preference.edit()
-        if (!preference.contains("notif")){
-            editor.putBoolean("notif",true)
+        if (!preference.contains("notif")) {
+            editor.putBoolean("notif", true)
             onSwitchChange(true)
         }
         editor.apply()
     }
 
     override fun onSwitchChange(b: Boolean) {
+        Log.d("CEK", "executed $b")
         val preference = getSharedPreferences("Setting", Context.MODE_PRIVATE)
         val editor = preference.edit()
-        editor.putBoolean("notif",b)
+        editor.putBoolean("notif", b)
         editor.apply()
-        if (b){
+        if (b) {
             dailyAlarmSetup()
-        }else{
+        } else {
             stopDailyAlarm()
         }
     }
@@ -161,8 +164,8 @@ class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
     private fun dailyAlarmSetup() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 15)
-        calendar.set(Calendar.MINUTE, 10)
+        calendar.set(Calendar.HOUR_OF_DAY, 9)
+        calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
 
 

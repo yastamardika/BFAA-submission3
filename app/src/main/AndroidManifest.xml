@@ -25,10 +25,10 @@
 
         <provider
             android:name=".provider.FavoriteProvider"
-            android:authorities="com.edo.ghfav"
+            android:authorities="com.ystmrdk.sub2_bfaa"
             android:exported="true"
-            android:readPermission="com.edo.ghfav.READ_DATABASE"
-            android:writePermission="com.edo.ghfav.WRITE_DATABASE" />
+            android:readPermission="com.ystmrdk.sub2_bfaa.READ_DATABASE"
+            android:writePermission="com.ystmrdk.sub2_bfaa.WRITE_DATABASE" />
 
         <activity android:name=".ui.FavoriteActivity" />
         <activity android:name=".ui.SettingActivity" />

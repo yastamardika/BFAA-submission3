@@ -3,8 +3,10 @@ package com.ystmrdk.sub2_bfaa.ui
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.widget.SwitchCompat
 import com.ystmrdk.sub2_bfaa.R
+import com.ystmrdk.sub2_bfaa.ui.MainActivity.Companion.callback
 import com.ystmrdk.sub2_bfaa.ui.fragment.SettingFragment
 import kotlinx.android.synthetic.main.fragment_setting.*
 
@@ -17,11 +19,12 @@ class SettingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_setting)
 
         switch = switch2
-        val state = this.getSharedPreferences("Setting", Context.MODE_PRIVATE).getBoolean("notif",true)
+        val state = this.getSharedPreferences("Setting", Context.MODE_PRIVATE).getBoolean("notif",false)
+        Log.d("CEK", "state: $state")
         switch.setChecked(state)
 
         switch.setOnCheckedChangeListener { _, stat ->
-//            callback.onSwitchChange(stat)
+            callback.onSwitchChange(stat)
         }
     }
 
