@@ -20,7 +20,7 @@ abstract class FavoriteDatabase : RoomDatabase() {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         FavoriteDatabase::class.java,
-                        "FavoriteDb"
+                        "FavoriteDatabase"
                     ).build()
                 }
             }

@@ -161,8 +161,8 @@ class MainActivity : AppCompatActivity(), SettingFragment.SettingCallback {
     private fun dailyAlarmSetup() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 9)
-        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.HOUR_OF_DAY, 15)
+        calendar.set(Calendar.MINUTE, 10)
         calendar.set(Calendar.SECOND, 0)
 
 

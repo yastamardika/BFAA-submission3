@@ -128,10 +128,13 @@ class DetailActivity : AppCompatActivity() {
 
     private fun toggleFavorite(){
         if(isFavorite){
+            menuFavorite?.setIcon(R.drawable.ic_baseline_favorite_border_24)
             detailViewModel.deleteFromFavorite()
         } else {
+            menuFavorite?.setIcon(R.drawable.ic_baseline_favorite_24)
             detailViewModel.addToFavorite()
         }
+        isFavorite = !isFavorite
         checkUser()
     }
 
