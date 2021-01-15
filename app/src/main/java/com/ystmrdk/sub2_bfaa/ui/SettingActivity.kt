@@ -19,9 +19,9 @@ class SettingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_setting)
 
         switch = switch2
-        val state = this.getSharedPreferences("Setting", Context.MODE_PRIVATE).getBoolean("notif",false)
+        val state = this.getSharedPreferences("Setting", Context.MODE_PRIVATE).getBoolean("notif",true)
         Log.d("CEK", "state: $state")
-        switch.setChecked(state)
+        switch.isChecked = state
 
         switch.setOnCheckedChangeListener { _, stat ->
             callback.onSwitchChange(stat)

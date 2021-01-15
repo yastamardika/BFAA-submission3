@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity(), SettingActivity.SettingCallback {
         }
 
         notificationSetup()
+//        dailyAlarmSetup()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -142,19 +143,23 @@ class MainActivity : AppCompatActivity(), SettingActivity.SettingCallback {
     }
 
     override fun onSwitchChange(b: Boolean) {
+        if (b) {
+            Log.d("CEK", "if executed $b")
+            dailyAlarmSetup()
+        } else {
+            Log.d("CEK", "else executed $b")
+            stopDailyAlarm()
+        }
         Log.d("CEK", "executed $b")
         val preference = getSharedPreferences("Setting", Context.MODE_PRIVATE)
         val editor = preference.edit()
         editor.putBoolean("notif", b)
         editor.apply()
-        if (b) {
-            dailyAlarmSetup()
-        } else {
-            stopDailyAlarm()
-        }
+
     }
 
     private fun stopDailyAlarm() {
+        Log.d("CEK", "stopDailyAlarm()")
         val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, AlarmReceiver.NOTIF_ID, intent, 0)
@@ -162,10 +167,11 @@ class MainActivity : AppCompatActivity(), SettingActivity.SettingCallback {
     }
 
     private fun dailyAlarmSetup() {
+        Log.d("CEK", "dailyAlarmSetup()")
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 9)
-        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.HOUR_OF_DAY, 15)
+        calendar.set(Calendar.MINUTE, 50)
         calendar.set(Calendar.SECOND, 0)
 
 
